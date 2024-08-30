@@ -45,7 +45,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ServiceProvider"
+                "Jorbascrumps\\QueueIt\\ServiceProvider"
             ]
         }
     }
