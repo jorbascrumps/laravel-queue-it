@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Http\Middleware\KnownUserMiddleware;
 use Jorbascrumps\QueueIt\Test\Fixture;
-use Jorbascrumps\QueueIt\Test\HttpRequestProviderMock;
 use Jorbascrumps\QueueIt\Test\TestCase;
 use Jorbascrumps\QueueIt\Test\UserInQueueServiceMock;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
@@ -58,8 +57,6 @@ class KnownUserMiddlewareTest extends TestCase
     {
         $this->mockConfig();
 
-        $this->mockRequestProvider();
-
         $userInQueueService = $this->mockQueueService();
         $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
             ActionTypes::QueueAction, null, null, self::QUEUE_URL, null, null
@@ -73,8 +70,6 @@ class KnownUserMiddlewareTest extends TestCase
     public function testTest2(): void
     {
         $this->mockConfig();
-
-        $this->mockRequestProvider();
 
         $userInQueueService = $this->mockQueueService();
         $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
@@ -90,8 +85,6 @@ class KnownUserMiddlewareTest extends TestCase
     {
         $this->mockConfig();
 
-        $this->mockRequestProvider();
-
         $userInQueueService = $this->mockQueueService();
         $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
             ActionTypes::IgnoreAction, null, null, null, null, null
@@ -100,17 +93,6 @@ class KnownUserMiddlewareTest extends TestCase
         $response = $this->get(self::PAGE_URL . '?queueittoken=token');
 
         $response->assertOk();
-    }
-
-    private function mockRequestProvider(): HttpRequestProviderMock
-    {
-        $httpRequestProvider = new HttpRequestProviderMock;
-
-        $r = new ReflectionProperty(KnownUser::class, 'httpRequestProvider');
-        $r->setAccessible(true);
-        $r->setValue(null, $httpRequestProvider);
-
-        return $httpRequestProvider;
     }
 
     private function mockQueueService(): UserInQueueServiceMock
