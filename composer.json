@@ -1,0 +1,45 @@
+{
+    "name": "jorbascrumps/laravel-queue-it",
+    "version": "1.0.0",
+    "homepage": "https://github.com/jorbascrumps/laravel-queue-it",
+    "description": "Laravel middleware for integrating Queue-it",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "queue-it",
+        "middleware",
+        "laravel-queue-it"
+    ],
+    "authors": [
+        {
+            "name": "Chris Wright",
+            "email": "hell@chriswright.dev"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "queueit/knownuserv3": "^3.7"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jorbascrumps\\QueueIt\\": "src",
+            "QueueIT\\KnownUserV3\\Test\\": "vendor/queueit/knownuserv3/Tests"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jorbascrumps\\QueueIt\\Test\\": "tests",
+            "QueueIT\\KnownUserV3\\Test\\": "vendor/queueit/knownuserv3/Tests"
+        }
+    },
+    "scripts": {
+        "test": "XDEBUG_MODE=coverage vendor/bin/testbench package:test --coverage-text --show-uncovered-for-coverage-text --testdox",
+        "lint": [
+            "@php vendor/bin/phpstan analyse --verbose --ansi"
+        ]
+    }
+}
