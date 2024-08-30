@@ -1,13 +1,13 @@
 {
-  "ConfigDataVersion": "1.0.0.4",
-  "Description": "storage test",
+  "ConfigDataVersion": "1.0.0.0",
+  "Description": "Laravel Queue It",
   "Integrations": [
     {
       "IsCookieHttpOnly": false,
       "IsCookieSecure": false,
-      "Name": "Local Test",
+      "Name": "Laravel Queue It",
       "ActionType": "Queue",
-      "EventId": "localtest",
+      "EventId": "laravelqueueit",
       "CookieDomain": "",
       "LayoutName": null,
       "Culture": "",
@@ -31,13 +31,13 @@
           "LogicalOperator": "And"
         }
       ],
-      "QueueDomain": "eventconnect.queue-it.net",
+      "QueueDomain": "larael.queue-it.net",
       "RedirectLogic": "AllowTParameter",
       "ForcedTargetUrl": ""
     }
   ],
-  "CustomerId": "eventconnect",
-  "AccountId": "eventconnect-jgoodfellow",
-  "Version": 11,
+  "CustomerId": "jorbascrumps",
+  "AccountId": "jotrbascrumps",
+  "Version": 1,
   "PublishDate": "2024-08-28T20:13:54.3748264Z"
 }
