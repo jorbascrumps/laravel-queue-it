@@ -2,7 +2,7 @@
 
 namespace Jorbascrumps\QueueIt\Test;
 
-use Jorbascrumps\QueueIt\QueueItServiceProvider;
+use Jorbascrumps\QueueIt\ServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -13,7 +13,7 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
-            QueueItServiceProvider::class,
+            ServiceProvider::class,
         ];
     }
 }

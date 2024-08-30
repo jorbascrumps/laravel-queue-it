@@ -2,9 +2,7 @@
 
 namespace Jorbascrumps\QueueIt;
 
-use Illuminate\Support\ServiceProvider;
-
-class QueueItServiceProvider extends ServiceProvider
+class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     /**
      * Bootstrap the application events.
