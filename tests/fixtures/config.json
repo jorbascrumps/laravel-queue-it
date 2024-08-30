@@ -1,0 +1,43 @@
+{
+  "ConfigDataVersion": "1.0.0.4",
+  "Description": "storage test",
+  "Integrations": [
+    {
+      "IsCookieHttpOnly": false,
+      "IsCookieSecure": false,
+      "Name": "Local Test",
+      "ActionType": "Queue",
+      "EventId": "localtest",
+      "CookieDomain": "",
+      "LayoutName": null,
+      "Culture": "",
+      "ExtendCookieValidity": true,
+      "CookieValidityMinute": 20,
+      "Triggers": [
+        {
+          "TriggerParts": [
+            {
+              "Operator": "Contains",
+              "ValueToCompare": "*",
+              "ValuesToCompare": null,
+              "UrlPart": "HostName",
+              "CookieName": null,
+              "HttpHeaderName": null,
+              "ValidatorType": "UrlValidator",
+              "IsNegative": false,
+              "IsIgnoreCase": true
+            }
+          ],
+          "LogicalOperator": "And"
+        }
+      ],
+      "QueueDomain": "eventconnect.queue-it.net",
+      "RedirectLogic": "AllowTParameter",
+      "ForcedTargetUrl": ""
+    }
+  ],
+  "CustomerId": "eventconnect",
+  "AccountId": "eventconnect-jgoodfellow",
+  "Version": 11,
+  "PublishDate": "2024-08-28T20:13:54.3748264Z"
+}
