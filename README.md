@@ -36,7 +36,7 @@ use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
 
 Route::view('/event', 'event')->middleware(KnownUserQueue::class);
 ```
-> [!IMPORTANT]
+> [!CAUTION]
 > You should not apply `KnownUserQueue` to static or cached pages, or assets.
 
 ### Inline Queue
