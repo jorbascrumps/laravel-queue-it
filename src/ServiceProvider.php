@@ -4,6 +4,7 @@ namespace Jorbascrumps\QueueIt;
 
 use Illuminate\Routing\Router;
 use Jorbascrumps\QueueIt\Http\Middleware\InlineQueue;
+use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -17,6 +18,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         ]);
 
         $router->aliasMiddleware(InlineQueue::SIGNATURE, InlineQueue::class);
+        $router->aliasMiddleware(KnownUserQueue::SIGNATURE, KnownUserQueue::class);
 
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
     }
