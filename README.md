@@ -23,7 +23,21 @@ QUEUE_IT_SECRET_KEY=
 
 ## Usage
 ### Known User Queue
-TODO
+Apply the `KnownUserQueue` middleware to any route or route group that you want to be queueable.
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::view('/event', 'event')->middleware('queue-it.known-user-queue');
+```
+You can also reference the class name instead of the alias if you prefer:
+```php
+use Illuminate\Support\Facades\Route;
+use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
+
+Route::view('/event', 'event')->middleware(KnownUserQueue::class);
+```
+> [!IMPORTANT]
+> You should not apply `KnownUserQueue` to static or cached pages, or assets.
 
 ### Inline Queue
 TODO
