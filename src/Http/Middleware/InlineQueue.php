@@ -11,7 +11,7 @@ use Stringable;
 
 class InlineQueue implements Stringable
 {
-    public const SIGNATURE = 'queue-it.inline-queue';
+    public const ALIAS = 'queue-it.inline-queue';
 
     public const TOKEN_KEY = 'queueittoken';
 
@@ -179,6 +179,6 @@ class InlineQueue implements Stringable
             ->map(fn ($value) => $value ?? '')
             ->implode(',');
 
-        return self::SIGNATURE . ':' . $params;
+        return self::ALIAS . ':' . $params;
     }
 }
