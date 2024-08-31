@@ -4,26 +4,17 @@ namespace Jorbascrumps\QueueIt\Test\Http\Middleware;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
-use Jorbascrumps\QueueIt\Http\Middleware\KnownUserMiddleware;
-use Jorbascrumps\QueueIt\Test\Fixture;
+use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
 use Jorbascrumps\QueueIt\Test\TestCase;
-use Jorbascrumps\QueueIt\Test\UserInQueueServiceMock;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
-use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 use QueueIT\KnownUserV3\SDK\RequestValidationResult;
-use ReflectionProperty;
 
-class KnownUserMiddlewareTest extends TestCase
+class KnownUserQueueTest extends TestCase
 {
-    public const PAGE_URL = '/queueable';
-
-    public const QUEUE_URL = 'https://queue-it.net';
-
     protected function defineWebRoutes($router): void
     {
-        $router->middleware(KnownUserMiddleware::class)->get(self::PAGE_URL, fn () => 'Page content');
+        $router->middleware(KnownUserQueue::class)->get(self::PAGE_URL, fn () => 'Page content');
     }
 
     public function testFeatureDisabled(): void
@@ -93,33 +84,5 @@ class KnownUserMiddlewareTest extends TestCase
         $response = $this->get(self::PAGE_URL . '?queueittoken=token');
 
         $response->assertOk();
-    }
-
-    private function mockQueueService(): UserInQueueServiceMock
-    {
-        $userInQueueService = new UserInQueueServiceMock;
-
-        $r = new ReflectionProperty(KnownUser::class, 'userInQueueService');
-        $r->setAccessible(true);
-        $r->setValue(null, $userInQueueService);
-
-        return $userInQueueService;
-    }
-
-    private function mockConfig(bool $returnNull = false, bool $throw = false): void
-    {
-        $config = Fixture::get('config.json');
-
-        $mock = Storage::shouldReceive('get')->once();
-
-        if ($returnNull) {
-            $mock->andReturnNull();
-        } else {
-            $mock->andReturn($config);
-        }
-
-        if ($throw) {
-            $mock->andThrow(FileNotFoundException::class);
-        }
     }
 }
