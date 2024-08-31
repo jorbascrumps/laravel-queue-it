@@ -37,7 +37,7 @@
         }
     },
     "scripts": {
-        "test": "XDEBUG_MODE=coverage vendor/bin/testbench package:test --coverage-text --show-uncovered-for-coverage-text --testdox",
+        "test": "XDEBUG_MODE=coverage vendor/bin/testbench package:test --coverage",
         "lint": [
             "@php vendor/bin/phpstan analyse --verbose --ansi"
         ]
