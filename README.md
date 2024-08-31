@@ -20,3 +20,16 @@ QUEUE_IT_SECRET_KEY=
 ```
 > [!NOTE]
 > Your secret can be found in the [Go Queue-it self-service platform](https://go.queue-it.net) under Account > Settings > Integration.
+
+## Usage
+### Known User Queue
+TODO
+
+### Inline Queue
+TODO
+
+## Customizing config file location
+By default, your integration configuration file is expected to be found in your application's storage as `queue-it-config.json`. If you need to store it under a different name in storage, you can specify this in your environment file:
+```dotenv
+QUEUE_IT_CONFIG_FILE=queue-it-config.json
+```
