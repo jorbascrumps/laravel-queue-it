@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Storage;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 
-class KnownUserMiddleware
+class KnownUserQueue
 {
+    public const SIGNATURE = 'queue-it.known-user-queue';
+
     public const TOKEN_KEY = 'queueittoken';
 
     /**
