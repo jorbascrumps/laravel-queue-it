@@ -2,16 +2,21 @@
 
 namespace Jorbascrumps\QueueIt;
 
+use Illuminate\Routing\Router;
+use Jorbascrumps\QueueIt\Http\Middleware\InlineQueue;
+
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     /**
      * Bootstrap the application events.
      */
-    public function boot(): void
+    public function boot(Router $router): void
     {
         $this->publishes([
             __DIR__ . '/config/queue-it.php' => config_path('queue-it.php'),
         ]);
+
+        $router->aliasMiddleware(InlineQueue::SIGNATURE, InlineQueue::class);
 
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
     }
