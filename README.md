@@ -18,7 +18,7 @@ Add your Queue-it credentials to your environment file.
 QUEUE_IT_CUSTOMER_ID=
 QUEUE_IT_SECRET_KEY=
 ```
-> [!NOTE]
+> [!TIP]
 > Your secret can be found in the [Go Queue-it self-service platform](https://go.queue-it.net) under Account > Settings > Integration.
 
 ## Usage
