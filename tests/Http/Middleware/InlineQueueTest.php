@@ -2,7 +2,6 @@
 
 namespace Jorbascrumps\QueueIt\Test\Http\Middleware;
 
-use Illuminate\Support\Facades\Config;
 use Jorbascrumps\QueueIt\Http\Middleware\InlineQueue;
 use Jorbascrumps\QueueIt\Test\TestCase;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
@@ -15,15 +14,6 @@ class InlineQueueTest extends TestCase
         $subject = InlineQueue::eventId('test')->queueDomain(self::QUEUE_URL);
 
         $router->middleware($subject)->get(self::PAGE_URL, fn () => 'Page content');
-    }
-
-    public function testFeatureDisabled(): void
-    {
-        Config::set('queue-it.enabled', false);
-
-        $response = $this->get(self::PAGE_URL);
-
-        $response->assertOk();
     }
 
     public function testPerformsQueueRedirect(): void

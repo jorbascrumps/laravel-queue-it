@@ -21,10 +21,6 @@ class KnownUserQueue
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! config('queue-it.enabled')) {
-            return $next($request);
-        }
-
         $customerId = config('queue-it.customer_id');
         $secretKey = config('queue-it.secret_key');
 

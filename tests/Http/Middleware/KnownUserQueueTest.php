@@ -3,7 +3,6 @@
 namespace Jorbascrumps\QueueIt\Test\Http\Middleware;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\Config;
 use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
 use Jorbascrumps\QueueIt\Test\TestCase;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
@@ -15,15 +14,6 @@ class KnownUserQueueTest extends TestCase
     protected function defineWebRoutes($router): void
     {
         $router->middleware(KnownUserQueue::class)->get(self::PAGE_URL, fn () => 'Page content');
-    }
-
-    public function testFeatureDisabled(): void
-    {
-        Config::set('queue-it.enabled', false);
-
-        $response = $this->get(self::PAGE_URL);
-
-        $response->assertOk();
     }
 
     public function testMissingConfig(): void

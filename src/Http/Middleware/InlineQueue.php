@@ -55,10 +55,6 @@ class InlineQueue implements Stringable
      */
     public function handle(Request $request, Closure $next, ...$eventConfigParams)
     {
-        if (! config('queue-it.enabled')) {
-            return $next($request);
-        }
-
         $urlWithoutToken = $request->fullUrlWithoutQuery(self::TOKEN_KEY);
         $token = $request->query(self::TOKEN_KEY);
         $eventConfig = $this->getEventConfig(...$eventConfigParams);

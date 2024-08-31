@@ -2,8 +2,6 @@
 
 return [
 
-    'enabled' => env('QUEUE_IT_ENABLED', false),
-
     'customer_id' => env('QUEUE_IT_CUSTOMER_ID'),
 
     'secret_key' => env('QUEUE_IT_SECRET_KEY'),
