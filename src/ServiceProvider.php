@@ -3,6 +3,7 @@
 namespace Jorbascrumps\QueueIt;
 
 use Illuminate\Routing\Router;
+use Jorbascrumps\QueueIt\Console\Commands\FetchIntegrationConfig;
 use Jorbascrumps\QueueIt\Http\Middleware\InlineQueue;
 use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
 
@@ -21,6 +22,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $router->aliasMiddleware(KnownUserQueue::ALIAS, KnownUserQueue::class);
 
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                FetchIntegrationConfig::class,
+            ]);
+        }
     }
 
     /**
