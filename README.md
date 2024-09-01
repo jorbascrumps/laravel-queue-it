@@ -1,4 +1,6 @@
 # Laravel Queue-it
+![Tests](https://github.com/jorbascrumps/laravel-queue-it/actions/workflows/run-tests.yml/badge.svg)
+
 Queue-it KnownUser v3 wrapper for Laravel.
 
 ```php
