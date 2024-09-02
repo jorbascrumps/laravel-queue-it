@@ -2,7 +2,7 @@
     "name": "jorbascrumps/laravel-queue-it",
     "version": "1.0.0",
     "homepage": "https://github.com/jorbascrumps/laravel-queue-it",
-    "description": "Queue-it KnownUser v3 wrapper for Laravel",
+    "description": "Queue-it integration for Laravel",
     "type": "library",
     "license": "MIT",
     "keywords": [
