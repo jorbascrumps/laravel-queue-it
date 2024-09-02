@@ -2,7 +2,7 @@
     "name": "jorbascrumps/laravel-queue-it",
     "version": "1.0.0",
     "homepage": "https://github.com/jorbascrumps/laravel-queue-it",
-    "description": "Laravel middleware for integrating Queue-it",
+    "description": "Queue-it KnownUser v3 wrapper for Laravel",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -14,7 +14,7 @@
     "authors": [
         {
             "name": "Chris Wright",
-            "email": "hell@chriswright.dev"
+            "email": "hello@chriswright.dev"
         }
     ],
     "require": {
