@@ -1,6 +1,6 @@
 {
     "name": "jorbascrumps/laravel-queue-it",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "homepage": "https://github.com/jorbascrumps/laravel-queue-it",
     "description": "Queue-it integration for Laravel",
     "type": "library",
