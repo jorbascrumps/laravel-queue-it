@@ -5,6 +5,7 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Jorbascrumps\QueueIt\Events\UserQueued;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 
@@ -39,6 +40,8 @@ class KnownUserQueue
         );
 
         if ($result->doRedirect()) {
+            event(new UserQueued($result));
+
             return redirect($result->redirectUrl)->withHeaders([
                 'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
                 'Pragma' => 'no-cache',
@@ -46,6 +49,8 @@ class KnownUserQueue
         }
 
         if ($result->actionType === 'Queue' && $request->filled(self::TOKEN_KEY)) {
+            event(new UserQueued($result));
+
             return redirect($urlWithoutToken);
         }
 

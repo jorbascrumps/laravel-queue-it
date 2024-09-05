@@ -4,6 +4,7 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Jorbascrumps\QueueIt\Events\UserQueued;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 use QueueIT\KnownUserV3\SDK\QueueEventConfig;
@@ -70,6 +71,8 @@ class InlineQueue implements Stringable
         );
 
         if ($result->doRedirect()) {
+            event(new UserQueued($result));
+
             return redirect($result->redirectUrl)->withHeaders([
                 'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
                 'Pragma' => 'no-cache',
@@ -77,6 +80,8 @@ class InlineQueue implements Stringable
         }
 
         if ($result->actionType === 'Queue' && $request->filled(self::TOKEN_KEY)) {
+            event(new UserQueued($result));
+
             return redirect($urlWithoutToken);
         }
 
