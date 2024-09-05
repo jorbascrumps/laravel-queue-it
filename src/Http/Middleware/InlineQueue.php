@@ -5,6 +5,7 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Jorbascrumps\QueueIt\Events\UserQueued;
+use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 use QueueIT\KnownUserV3\SDK\QueueEventConfig;
@@ -56,11 +57,13 @@ class InlineQueue implements Stringable
      */
     public function handle(Request $request, Closure $next, ...$eventConfigParams)
     {
+        $customerId = config('queue-it.customer_id');
+        $secretKey = config('queue-it.secret_key');
+        $cacheHeaders = config('queue-it.redirect_cache_headers');
+
         $urlWithoutToken = $request->fullUrlWithoutQuery(self::TOKEN_KEY);
         $token = $request->query(self::TOKEN_KEY);
         $eventConfig = $this->getEventConfig(...$eventConfigParams);
-        $customerId = config('queue-it.customer_id');
-        $secretKey = config('queue-it.secret_key');
 
         $result = KnownUser::resolveQueueRequestByLocalConfig(
             $urlWithoutToken,
@@ -73,13 +76,10 @@ class InlineQueue implements Stringable
         if ($result->doRedirect()) {
             event(new UserQueued($result));
 
-            return redirect($result->redirectUrl)->withHeaders([
-                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-                'Pragma' => 'no-cache',
-            ]);
+            return redirect($result->redirectUrl)->setCache($cacheHeaders);
         }
 
-        if ($result->actionType === 'Queue' && $request->filled(self::TOKEN_KEY)) {
+        if ($result->actionType === ActionTypes::QueueAction && $request->filled(self::TOKEN_KEY)) {
             return redirect($urlWithoutToken);
         }
 

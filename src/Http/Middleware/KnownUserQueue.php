@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Events\UserQueued;
+use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 
@@ -24,6 +25,7 @@ class KnownUserQueue
     {
         $customerId = config('queue-it.customer_id');
         $secretKey = config('queue-it.secret_key');
+        $cacheHeaders = config('queue-it.redirect_cache_headers');
 
         $token = $request->query(self::TOKEN_KEY);
         $urlWithoutToken = $request->fullUrlWithoutQuery(self::TOKEN_KEY);
@@ -42,13 +44,10 @@ class KnownUserQueue
         if ($result->doRedirect()) {
             event(new UserQueued($result));
 
-            return redirect($result->redirectUrl)->withHeaders([
-                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-                'Pragma' => 'no-cache',
-            ]);
+            return redirect($result->redirectUrl)->setCache($cacheHeaders);
         }
 
-        if ($result->actionType === 'Queue' && $request->filled(self::TOKEN_KEY)) {
+        if ($result->actionType === ActionTypes::QueueAction && $request->filled(self::TOKEN_KEY)) {
             return redirect($urlWithoutToken);
         }
 
