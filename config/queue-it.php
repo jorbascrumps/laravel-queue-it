@@ -12,4 +12,11 @@ return [
 
     'config_update_url' => env('QUEUE_IT_CONFIG_UPDATE_URL', '/queue-it/config'),
 
+    'redirect_cache_headers' => [
+        'no_store' => true,
+        'no_cache' => true,
+        'must_revalidate' => true,
+        'max_age' => 0,
+    ],
+
 ];
