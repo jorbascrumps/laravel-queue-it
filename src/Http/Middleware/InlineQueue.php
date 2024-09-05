@@ -80,8 +80,6 @@ class InlineQueue implements Stringable
         }
 
         if ($result->actionType === 'Queue' && $request->filled(self::TOKEN_KEY)) {
-            event(new UserQueued($result));
-
             return redirect($urlWithoutToken);
         }
 

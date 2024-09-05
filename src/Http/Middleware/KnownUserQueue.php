@@ -49,8 +49,6 @@ class KnownUserQueue
         }
 
         if ($result->actionType === 'Queue' && $request->filled(self::TOKEN_KEY)) {
-            event(new UserQueued($result));
-
             return redirect($urlWithoutToken);
         }
 
