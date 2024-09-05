@@ -2,6 +2,8 @@
 
 namespace Jorbascrumps\QueueIt\Test\Http\Middleware;
 
+use Illuminate\Support\Facades\Event;
+use Jorbascrumps\QueueIt\Events\UserQueued;
 use Jorbascrumps\QueueIt\Http\Middleware\InlineQueue;
 use Jorbascrumps\QueueIt\Test\TestCase;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
@@ -50,6 +52,20 @@ class InlineQueueTest extends TestCase
         $response = $this->get(self::PAGE_URL . '?queueittoken=token');
 
         $response->assertOk();
+    }
+
+    public function testEmitsOnQueueRedirect(): void
+    {
+        Event::fake();
+
+        $userInQueueService = $this->mockQueueService();
+        $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
+            ActionTypes::QueueAction, null, null, self::QUEUE_URL, null, null
+        );
+
+        $response = $this->get(self::PAGE_URL);
+
+        Event::assertDispatched(UserQueued::class);
     }
 
     /**
