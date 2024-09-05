@@ -5,6 +5,7 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 
@@ -45,7 +46,7 @@ class KnownUserQueue
             ]);
         }
 
-        if ($result->actionType === 'Queue' && $request->filled(self::TOKEN_KEY)) {
+        if ($result->actionType === ActionTypes::QueueAction && $request->filled(self::TOKEN_KEY)) {
             return redirect($urlWithoutToken);
         }
 
