@@ -3,6 +3,8 @@
 namespace Jorbascrumps\QueueIt\Test\Http\Middleware;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\Event;
+use Jorbascrumps\QueueIt\Events\UserQueued;
 use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
 use Jorbascrumps\QueueIt\Test\TestCase;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
@@ -74,5 +76,21 @@ class KnownUserQueueTest extends TestCase
         $response = $this->get(self::PAGE_URL . '?queueittoken=token');
 
         $response->assertOk();
+    }
+
+    public function testEmitsOnQueueRedirect(): void
+    {
+        Event::fake();
+
+        $this->mockConfig();
+
+        $userInQueueService = $this->mockQueueService();
+        $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
+            ActionTypes::QueueAction, null, null, self::QUEUE_URL, null, null
+        );
+
+        $response = $this->get(self::PAGE_URL);
+
+        Event::assertDispatched(UserQueued::class);
     }
 }

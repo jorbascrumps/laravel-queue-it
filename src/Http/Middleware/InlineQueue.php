@@ -4,6 +4,7 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Jorbascrumps\QueueIt\Events\UserQueued;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
@@ -73,6 +74,8 @@ class InlineQueue implements Stringable
         );
 
         if ($result->doRedirect()) {
+            event(new UserQueued($result));
+
             return redirect($result->redirectUrl)->setCache($cacheHeaders);
         }
 
