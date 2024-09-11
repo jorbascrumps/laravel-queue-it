@@ -53,7 +53,6 @@ class InlineQueue implements Stringable
     /**
      * Handle an incoming request.
      * @see https://github.com/queueit/KnownUser.V3.PHP#implementation-using-inline-queue-configuration
-     * @throws KnownUserException
      */
     public function handle(Request $request, Closure $next, ...$eventConfigParams)
     {
@@ -65,13 +64,13 @@ class InlineQueue implements Stringable
         $token = $request->query(self::TOKEN_KEY);
         $eventConfig = $this->getEventConfig(...$eventConfigParams);
 
-        $result = KnownUser::resolveQueueRequestByLocalConfig(
-            $urlWithoutToken,
-            $token,
-            $eventConfig,
-            $customerId,
-            $secretKey
-        );
+        try {
+            $result = KnownUser::resolveQueueRequestByLocalConfig($urlWithoutToken, $token, $eventConfig, $customerId, $secretKey);
+        } catch (KnownUserException $e) {
+            $header = config('queue-it.queue_error_header');
+
+            return $next($request)->header($header, true);
+        }
 
         if ($result->doRedirect()) {
             event(new UserQueued($result));

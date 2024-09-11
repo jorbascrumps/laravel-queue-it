@@ -8,7 +8,7 @@ return [
 
     'api_key' => env('QUEUE_IT_API_KEY'),
 
-    'config_file' => env('QUEUE_IT_CONFIG_FILE'),
+    'config_file' => env('QUEUE_IT_CONFIG_FILE', 'queue-it-config.json'),
 
     'config_update_url' => env('QUEUE_IT_CONFIG_UPDATE_URL', '/queue-it/config'),
 
@@ -18,5 +18,7 @@ return [
         'must_revalidate' => true,
         'max_age' => 0,
     ],
+
+    'queue_error_header' => env('QUEUE_IT_ERROR_HEADER', 'X-Queue-Error'),
 
 ];
