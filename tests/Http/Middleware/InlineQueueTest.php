@@ -13,9 +13,22 @@ class InlineQueueTest extends TestCase
 {
     protected function defineWebRoutes($router): void
     {
-        $subject = InlineQueue::eventId('test')->queueDomain(self::QUEUE_URL);
+        $router->middleware([
+            InlineQueue::eventId('test2')->queueDomain(self::QUEUE_URL),
+        ])
+            ->get(self::PAGE_URL, fn () => 'Page content');
 
-        $router->middleware($subject)->get(self::PAGE_URL, fn () => 'Page content');
+        $router->middleware([
+            InlineQueue::eventId('invalid'),
+        ])
+            ->get('/invalid', fn () => 'Page content');
+    }
+
+    public function testInvalidConfig(): void
+    {
+        $response = $this->get('/invalid');
+
+        $response->assertHeader('X-Queue-Error');
     }
 
     public function testPerformsQueueRedirect(): void

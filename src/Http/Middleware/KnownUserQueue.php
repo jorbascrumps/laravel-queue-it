@@ -19,7 +19,6 @@ class KnownUserQueue
     /**
      * Handle an incoming request.
      * @see https://github.com/queueit/KnownUser.V3.PHP#implementation
-     * @throws KnownUserException
      */
     public function handle(Request $request, Closure $next)
     {
@@ -33,13 +32,13 @@ class KnownUserQueue
         $configPath = config('queue-it.config_file');
         $config = Storage::get($configPath);
 
-        $result = KnownUser::validateRequestByIntegrationConfig(
-            $urlWithoutToken,
-            $token,
-            $config,
-            $customerId,
-            $secretKey
-        );
+        try {
+            $result = KnownUser::validateRequestByIntegrationConfig($urlWithoutToken, $token, $config, $customerId, $secretKey);
+        } catch (KnownUserException $e) {
+            $header = config('queue-it.queue_error_header');
+
+            return $next($request)->header($header, true);
+        }
 
         if ($result->doRedirect()) {
             event(new UserQueued($result));
