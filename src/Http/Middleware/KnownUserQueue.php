@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Events\UserQueued;
+use Jorbascrumps\QueueIt\HttpRequestProvider;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
@@ -31,6 +32,8 @@ class KnownUserQueue
 
         $configPath = config('queue-it.config_file');
         $config = Storage::get($configPath);
+
+        KnownUser::setHttpRequestProvider(new HttpRequestProvider($request));
 
         try {
             $result = KnownUser::validateRequestByIntegrationConfig($urlWithoutToken, $token, $config, $customerId, $secretKey);
