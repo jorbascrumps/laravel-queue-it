@@ -4,6 +4,7 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Jorbascrumps\QueueIt\Events\QueueFailed;
 use Jorbascrumps\QueueIt\Events\UserQueued;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
@@ -67,6 +68,8 @@ class InlineQueue implements Stringable
         try {
             $result = KnownUser::resolveQueueRequestByLocalConfig($urlWithoutToken, $token, $eventConfig, $customerId, $secretKey);
         } catch (KnownUserException $e) {
+            event(new QueueFailed($e));
+
             $header = config('queue-it.queue_error_header');
 
             return $next($request)->header($header, true);
