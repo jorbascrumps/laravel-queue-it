@@ -5,6 +5,7 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Jorbascrumps\QueueIt\Events\QueueFailed;
 use Jorbascrumps\QueueIt\Events\UserQueued;
 use Jorbascrumps\QueueIt\HttpRequestProvider;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
@@ -38,6 +39,8 @@ class KnownUserQueue
         try {
             $result = KnownUser::validateRequestByIntegrationConfig($urlWithoutToken, $token, $config, $customerId, $secretKey);
         } catch (KnownUserException $e) {
+            event(new QueueFailed($e));
+
             $header = config('queue-it.queue_error_header');
 
             return $next($request)->header($header, true);
