@@ -19,4 +19,6 @@ return [
         'max_age' => 0,
     ],
 
+    'queue_error_header' => env('QUEUE_IT_ERROR_HEADER', 'X-Queue-Error'),
+
 ];

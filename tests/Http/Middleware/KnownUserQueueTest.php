@@ -31,9 +31,9 @@ class KnownUserQueueTest extends TestCase
     {
         $this->mockConfig(true);
 
-        $this->expectException(KnownUserException::class);
+        $response = $this->get(self::PAGE_URL);
 
-        $this->withoutExceptionHandling()->getJson(self::PAGE_URL);
+        $response->assertHeader('X-Queue-Error');
     }
 
     public function testPerformsQueueRedirect(): void
