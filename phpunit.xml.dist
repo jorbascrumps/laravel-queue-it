@@ -2,10 +2,8 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.3/phpunit.xsd" bootstrap="vendor/autoload.php" cacheDirectory=".phpunit.cache" executionOrder="depends,defects" failOnRisky="true" failOnWarning="true">
   <php>
     <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
-    <env name="QUEUE_IT_ENABLED" value="true"/>
     <env name="QUEUE_IT_CUSTOMER_ID" value="1234"/>
     <env name="QUEUE_IT_SECRET_KEY" value="1234"/>
-    <env name="QUEUE_IT_CONFIG_FILE" value="config.json"/>
   </php>
   <testsuites>
     <testsuite name="default">
