@@ -19,6 +19,32 @@ class KnownUserQueue
     public const TOKEN_KEY = 'queueittoken';
 
     /**
+     * The callback that is responsible for resolving the integration configuration.
+     * @var callable|null
+     */
+    protected static $integrationConfigurationResolver;
+
+    /**
+     * Register a callback that is responsible for resolving the integration configuration.
+     */
+    public static function resolveIntegrationConfigurationUsing(callable $callback): void
+    {
+        static::$integrationConfigurationResolver = $callback;
+    }
+
+    /**
+     * Resolve the integration configuration.
+     */
+    protected function resolveIntegrationConfiguration(): ?string
+    {
+        if (static::$integrationConfigurationResolver) {
+            return call_user_func(static::$integrationConfigurationResolver);
+        }
+
+        return Storage::get(config('queue-it.config_file'));
+    }
+
+    /**
      * Handle an incoming request.
      * @see https://github.com/queueit/KnownUser.V3.PHP#implementation
      */
@@ -31,8 +57,7 @@ class KnownUserQueue
         $token = $request->query(self::TOKEN_KEY);
         $urlWithoutToken = $request->fullUrlWithoutQuery(self::TOKEN_KEY);
 
-        $configPath = config('queue-it.config_file');
-        $config = Storage::get($configPath);
+        $config = $this->resolveIntegrationConfiguration();
 
         KnownUser::setHttpRequestProvider(new HttpRequestProvider($request));
 

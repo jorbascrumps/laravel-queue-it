@@ -2,15 +2,18 @@
 
 namespace Jorbascrumps\QueueIt\Test\Http\Middleware;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Events\UserQueued;
 use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
+use Jorbascrumps\QueueIt\Test\Fixture;
 use Jorbascrumps\QueueIt\Test\TestCase;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
-use QueueIT\KnownUserV3\SDK\KnownUserException;
 use QueueIT\KnownUserV3\SDK\RequestValidationResult;
 
+/**
+ * @backupStaticAttributes enabled
+ */
 class KnownUserQueueTest extends TestCase
 {
     protected function defineWebRoutes($router): void
@@ -20,25 +23,46 @@ class KnownUserQueueTest extends TestCase
 
     public function testMissingConfig(): void
     {
-        $this->mockConfig(false, true);
+        KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
+            return null;
+        });
 
-        $this->expectException(FileNotFoundException::class);
+        $response = $this->getJson(self::PAGE_URL);
 
-        $this->withoutExceptionHandling()->getJson(self::PAGE_URL);
+        $response->assertHeader('X-Queue-Error');
     }
 
     public function testInvalidConfig(): void
     {
-        $this->mockConfig(true);
+        KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
+            return null;
+        });
 
         $response = $this->get(self::PAGE_URL);
 
         $response->assertHeader('X-Queue-Error');
     }
 
+    public function testUsesDefaultFileStorageConfig(): void
+    {
+        $config = Fixture::get('config.json');
+        Storage::shouldReceive('get')->once()->andReturn($config);
+
+        $userInQueueService = $this->mockQueueService();
+        $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
+            ActionTypes::QueueAction, null, null, self::QUEUE_URL, null, null
+        );
+
+        $response = $this->get(self::PAGE_URL);
+
+        $response->assertRedirect(self::QUEUE_URL);
+    }
+
     public function testPerformsQueueRedirect(): void
     {
-        $this->mockConfig();
+        KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
+            return Fixture::get('config.json');
+        });
 
         $userInQueueService = $this->mockQueueService();
         $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
@@ -52,7 +76,9 @@ class KnownUserQueueTest extends TestCase
 
     public function testTest2(): void
     {
-        $this->mockConfig();
+        KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
+            return Fixture::get('config.json');
+        });
 
         $userInQueueService = $this->mockQueueService();
         $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
@@ -66,7 +92,9 @@ class KnownUserQueueTest extends TestCase
 
     public function testIgnoresInvalidAction(): void
     {
-        $this->mockConfig();
+        KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
+            return Fixture::get('config.json');
+        });
 
         $userInQueueService = $this->mockQueueService();
         $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
@@ -82,7 +110,9 @@ class KnownUserQueueTest extends TestCase
     {
         Event::fake();
 
-        $this->mockConfig();
+        KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
+            return Fixture::get('config.json');
+        });
 
         $userInQueueService = $this->mockQueueService();
         $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
