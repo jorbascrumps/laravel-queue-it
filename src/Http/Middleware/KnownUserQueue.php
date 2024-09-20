@@ -36,7 +36,7 @@ class KnownUserQueue
     /**
      * Resolve the integration configuration.
      */
-    protected function resolveIntegrationConfiguration(): ?string
+    protected function resolveIntegrationConfiguration(): string
     {
         if (isset(static::$integrationConfigurationResolver)) {
             return Container::getInstance()->call(self::$integrationConfigurationResolver);
