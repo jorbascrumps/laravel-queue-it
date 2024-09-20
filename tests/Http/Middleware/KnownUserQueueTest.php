@@ -10,6 +10,7 @@ use Jorbascrumps\QueueIt\Test\Fixture;
 use Jorbascrumps\QueueIt\Test\TestCase;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\RequestValidationResult;
+use TypeError;
 
 /**
  * @backupStaticAttributes enabled
@@ -27,15 +28,15 @@ class KnownUserQueueTest extends TestCase
             return null;
         });
 
-        $response = $this->getJson(self::PAGE_URL);
+        $this->expectException(TypeError::class);
 
-        $response->assertHeader('X-Queue-Error');
+        $response = $this->withoutExceptionHandling()->getJson(self::PAGE_URL);
     }
 
     public function testInvalidConfig(): void
     {
         KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
-            return null;
+            return '';
         });
 
         $response = $this->get(self::PAGE_URL);
