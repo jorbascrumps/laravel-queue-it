@@ -83,6 +83,7 @@ KnownUserQueue::resolveIntegrationConfigurationUsing(function () {
     // Return your integration configuration as a JSON string
 });
 ```
+The default resolver provided will attempt to find your configuration in your application's storage.
 ### Manual download
 Download options can be found in your account under _Integrations > Overview > Latest KnownUser configuration_. You should save this to your application's storage directory.
 
