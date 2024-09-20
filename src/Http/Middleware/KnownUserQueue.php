@@ -3,6 +3,7 @@
 namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Jorbascrumps\QueueIt\Events\QueueFailed;
 use Jorbascrumps\QueueIt\Events\UserQueued;
@@ -38,7 +39,7 @@ class KnownUserQueue
     protected function resolveIntegrationConfiguration(): ?string
     {
         if (isset(static::$integrationConfigurationResolver)) {
-            return call_user_func(static::$integrationConfigurationResolver);
+            return Container::getInstance()->call(self::$integrationConfigurationResolver);
         }
 
         throw new RuntimeException('No integration configuration resolver has been set.');
