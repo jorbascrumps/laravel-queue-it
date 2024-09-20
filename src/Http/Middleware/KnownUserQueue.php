@@ -4,13 +4,13 @@ namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Events\QueueFailed;
 use Jorbascrumps\QueueIt\Events\UserQueued;
 use Jorbascrumps\QueueIt\HttpRequestProvider;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
+use RuntimeException;
 
 class KnownUserQueue
 {
@@ -37,11 +37,11 @@ class KnownUserQueue
      */
     protected function resolveIntegrationConfiguration(): ?string
     {
-        if (static::$integrationConfigurationResolver) {
+        if (isset(static::$integrationConfigurationResolver)) {
             return call_user_func(static::$integrationConfigurationResolver);
         }
 
-        return Storage::get(config('queue-it.config_file'));
+        throw new RuntimeException('No integration configuration resolver has been set.');
     }
 
     /**
