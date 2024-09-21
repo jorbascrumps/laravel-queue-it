@@ -85,6 +85,14 @@ php artisan queue-it:fetch-config
 > ```
 > QUEUE_IT_API_KEY=your-api-key
 > ```
+### Custom resolver
+If you need to implement custom logic to provide your integration configuration you may do so using a custom resolver in a service provider.
+```php
+KnownUserQueue::resolveIntegrationConfigurationUsing(function () {
+    // Return your integration configuration as a JSON string
+});
+```
+The default resolver provided will attempt to find your configuration in your application's storage.
 ### Manual download
 Download options can be found in your account under _Integrations > Overview > Latest KnownUser configuration_. You should save this to your application's storage directory.
 

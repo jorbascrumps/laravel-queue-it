@@ -2,8 +2,6 @@
 
 namespace Jorbascrumps\QueueIt\Test;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\ServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -23,23 +21,6 @@ abstract class TestCase extends Orchestra
         return [
             ServiceProvider::class,
         ];
-    }
-
-    protected function mockConfig(bool $returnNull = false, bool $throw = false): void
-    {
-        $config = Fixture::get('config.json');
-
-        $mock = Storage::shouldReceive('get')->once();
-
-        if ($returnNull) {
-            $mock->andReturnNull();
-        } else {
-            $mock->andReturn($config);
-        }
-
-        if ($throw) {
-            $mock->andThrow(FileNotFoundException::class);
-        }
     }
 
     protected function mockQueueService(): UserInQueueServiceMock
