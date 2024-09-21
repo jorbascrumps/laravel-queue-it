@@ -124,4 +124,20 @@ class KnownUserQueueTest extends TestCase
 
         Event::assertDispatched(UserQueued::class);
     }
+
+    public function testUserQueueEligibility(): void
+    {
+        KnownUserQueue::resolveUserQueueEligibilityUsing(function () {
+            return false;
+        });
+
+        $userInQueueService = $this->mockQueueService();
+        $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
+            ActionTypes::QueueAction, null, null, self::QUEUE_URL, null, null
+        );
+
+        $response = $this->get(self::PAGE_URL);
+
+        $response->assertOk();
+    }
 }
