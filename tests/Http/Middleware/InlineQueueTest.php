@@ -9,6 +9,9 @@ use Jorbascrumps\QueueIt\Test\TestCase;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\RequestValidationResult;
 
+/**
+ * @backupStaticAttributes enabled
+ */
 class InlineQueueTest extends TestCase
 {
     protected function defineWebRoutes($router): void
