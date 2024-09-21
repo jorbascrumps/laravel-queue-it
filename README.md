@@ -57,6 +57,15 @@ Route::view('/event', 'event')->middleware([
 ]);
 ```
 
+## User queue eligibility
+You may not want to send every user through the queue. In these scenarios you can provide a customer resolver to determine queue eligibility within a service provider.
+```php
+KnownUserQueue::resolveUserQueueEligibilityUsing(function (Authenticatable $user) {
+    return ! $user->isAdmin();
+});
+```
+The callback will be resolved via the container so you can inject the authenticated user or any other depedency you may need.
+
 ## Exporting integration config
 Known User Queues require an integration configuration file that contains logic for how and when queues should be managed. There are several options available to add this file to your project.
 ### Publish webhook
