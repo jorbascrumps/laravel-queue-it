@@ -3,20 +3,47 @@
 namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Events\QueueFailed;
 use Jorbascrumps\QueueIt\Events\UserQueued;
 use Jorbascrumps\QueueIt\HttpRequestProvider;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
+use RuntimeException;
 
 class KnownUserQueue
 {
     public const ALIAS = 'queue-it.known-user-queue';
 
     public const TOKEN_KEY = 'queueittoken';
+
+    /**
+     * The callback that is responsible for resolving the integration configuration.
+     * @var callable|null
+     */
+    protected static $integrationConfigurationResolver;
+
+    /**
+     * Register a callback that is responsible for resolving the integration configuration.
+     */
+    public static function resolveIntegrationConfigurationUsing(callable $callback): void
+    {
+        static::$integrationConfigurationResolver = $callback;
+    }
+
+    /**
+     * Resolve the integration configuration.
+     */
+    protected function resolveIntegrationConfiguration(): string
+    {
+        if (isset(static::$integrationConfigurationResolver)) {
+            return Container::getInstance()->call(self::$integrationConfigurationResolver);
+        }
+
+        throw new RuntimeException('No integration configuration resolver has been set.');
+    }
 
     /**
      * Handle an incoming request.
@@ -31,8 +58,7 @@ class KnownUserQueue
         $token = $request->query(self::TOKEN_KEY);
         $urlWithoutToken = $request->fullUrlWithoutQuery(self::TOKEN_KEY);
 
-        $configPath = config('queue-it.config_file');
-        $config = Storage::get($configPath);
+        $config = $this->resolveIntegrationConfiguration();
 
         KnownUser::setHttpRequestProvider(new HttpRequestProvider($request));
 

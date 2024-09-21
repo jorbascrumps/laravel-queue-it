@@ -3,6 +3,7 @@
 namespace Jorbascrumps\QueueIt;
 
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Console\Commands\FetchIntegrationConfig;
 use Jorbascrumps\QueueIt\Http\Middleware\InlineQueue;
 use Jorbascrumps\QueueIt\Http\Middleware\KnownUserQueue;
@@ -28,6 +29,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 FetchIntegrationConfig::class,
             ]);
         }
+
+        KnownUserQueue::resolveIntegrationConfigurationUsing(static function () {
+            return Storage::get(config('queue-it.config_file'));
+        });
     }
 
     /**
