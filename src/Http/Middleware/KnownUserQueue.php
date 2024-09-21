@@ -3,6 +3,7 @@
 namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Jorbascrumps\QueueIt\Events\QueueFailed;
@@ -19,11 +20,41 @@ class KnownUserQueue
     public const TOKEN_KEY = 'queueittoken';
 
     /**
+     * The callback that is responsible for resolving user queue eligibility.
+     * @var callable|null
+     */
+    protected static $userQueueEligibilityResolver;
+
+    /**
+     * Register a callback that is responsible for resolving user queue eligibility.
+     */
+    public static function resolveUserQueueEligibilityUsing(callable $callback): void
+    {
+        static::$userQueueEligibilityResolver = $callback;
+    }
+
+    /**
+     * Resolve user queue eligibility.
+     */
+    protected function resolveUserQueueEligibility(): bool
+    {
+        if (isset(static::$userQueueEligibilityResolver)) {
+            return Container::getInstance()->call(self::$userQueueEligibilityResolver);
+        }
+
+        return true;
+    }
+
+    /**
      * Handle an incoming request.
      * @see https://github.com/queueit/KnownUser.V3.PHP#implementation
      */
     public function handle(Request $request, Closure $next)
     {
+        if (! $this->resolveUserQueueEligibility()) {
+            return $next($request);
+        }
+
         $customerId = config('queue-it.customer_id');
         $secretKey = config('queue-it.secret_key');
         $cacheHeaders = config('queue-it.redirect_cache_headers');
