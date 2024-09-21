@@ -11,6 +11,9 @@ use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 use QueueIT\KnownUserV3\SDK\RequestValidationResult;
 
+/**
+ * @backupStaticAttributes enabled
+ */
 class KnownUserQueueTest extends TestCase
 {
     protected function defineWebRoutes($router): void
@@ -92,5 +95,21 @@ class KnownUserQueueTest extends TestCase
         $response = $this->get(self::PAGE_URL);
 
         Event::assertDispatched(UserQueued::class);
+    }
+
+    public function testUserQueueEligibility(): void
+    {
+        KnownUserQueue::resolveUserQueueEligibilityUsing(function () {
+            return false;
+        });
+
+        $userInQueueService = $this->mockQueueService();
+        $userInQueueService->validateQueueRequestResult = new RequestValidationResult(
+            ActionTypes::QueueAction, null, null, self::QUEUE_URL, null, null
+        );
+
+        $response = $this->get(self::PAGE_URL);
+
+        $response->assertOk();
     }
 }

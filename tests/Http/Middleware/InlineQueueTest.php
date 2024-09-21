@@ -81,6 +81,17 @@ class InlineQueueTest extends TestCase
         Event::assertDispatched(UserQueued::class);
     }
 
+    public function testUserQueueEligibility(): void
+    {
+        InlineQueue::resolveUserQueueEligibilityUsing(function () {
+            return false;
+        });
+
+        $response = $this->get(self::PAGE_URL);
+
+        $response->assertOk();
+    }
+
     /**
      * @dataProvider aliasProvider
      */
