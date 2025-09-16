@@ -3,10 +3,10 @@
 namespace Jorbascrumps\QueueIt\Http\Middleware;
 
 use Closure;
-use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Jorbascrumps\QueueIt\Events\QueueFailed;
 use Jorbascrumps\QueueIt\Events\UserQueued;
+use Jorbascrumps\QueueIt\Http\Concerns\ResolvesQueueEligibility;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
@@ -15,15 +15,11 @@ use Stringable;
 
 class InlineQueue implements Stringable
 {
+    use ResolvesQueueEligibility;
+
     public const ALIAS = 'queue-it.inline-queue';
 
     public const TOKEN_KEY = 'queueittoken';
-
-    /**
-     * The callback that is responsible for resolving user queue eligibility.
-     * @var callable|null
-     */
-    protected static $userQueueEligibilityResolver;
 
     protected ?string $eventId = null;
 
@@ -56,26 +52,6 @@ class InlineQueue implements Stringable
         $this->cookieDomain = $cookieDomain;
         $this->queueDomain = $queueDomain;
         $this->eventId = $eventId;
-    }
-
-    /**
-     * Register a callback that is responsible for resolving user queue eligibility.
-     */
-    public static function resolveUserQueueEligibilityUsing(callable $callback): void
-    {
-        static::$userQueueEligibilityResolver = $callback;
-    }
-
-    /**
-     * Resolve user queue eligibility.
-     */
-    protected function resolveUserQueueEligibility(): bool
-    {
-        if (isset(static::$userQueueEligibilityResolver)) {
-            return Container::getInstance()->call(self::$userQueueEligibilityResolver);
-        }
-
-        return true;
     }
 
     /**

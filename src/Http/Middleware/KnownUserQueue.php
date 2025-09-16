@@ -7,6 +7,7 @@ use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Jorbascrumps\QueueIt\Events\QueueFailed;
 use Jorbascrumps\QueueIt\Events\UserQueued;
+use Jorbascrumps\QueueIt\Http\Concerns\ResolvesQueueEligibility;
 use Jorbascrumps\QueueIt\HttpRequestProvider;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
@@ -15,6 +16,8 @@ use RuntimeException;
 
 class KnownUserQueue
 {
+    use ResolvesQueueEligibility;
+
     public const ALIAS = 'queue-it.known-user-queue';
 
     public const TOKEN_KEY = 'queueittoken';
@@ -24,12 +27,6 @@ class KnownUserQueue
      * @var callable|null
      */
     protected static $integrationConfigurationResolver;
-
-    /**
-     * The callback that is responsible for resolving user queue eligibility.
-     * @var callable|null
-     */
-    protected static $userQueueEligibilityResolver;
 
     /**
      * Register a callback that is responsible for resolving the integration configuration.
@@ -49,26 +46,6 @@ class KnownUserQueue
         }
 
         throw new RuntimeException('No integration configuration resolver has been set.');
-    }
-
-    /**
-     * Register a callback that is responsible for resolving user queue eligibility.
-     */
-    public static function resolveUserQueueEligibilityUsing(callable $callback): void
-    {
-        static::$userQueueEligibilityResolver = $callback;
-    }
-
-    /**
-     * Resolve user queue eligibility.
-     */
-    protected function resolveUserQueueEligibility(): bool
-    {
-        if (isset(static::$userQueueEligibilityResolver)) {
-            return Container::getInstance()->call(self::$userQueueEligibilityResolver);
-        }
-
-        return true;
     }
 
     /**
