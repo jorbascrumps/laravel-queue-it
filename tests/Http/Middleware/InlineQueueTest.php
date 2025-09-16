@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Event;
 use Jorbascrumps\QueueIt\Events\UserQueued;
 use Jorbascrumps\QueueIt\Http\Middleware\InlineQueue;
 use Jorbascrumps\QueueIt\Test\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\RequestValidationResult;
 
@@ -98,6 +99,7 @@ class InlineQueueTest extends TestCase
     /**
      * @dataProvider aliasProvider
      */
+    #[DataProvider('aliasProvider')]
     public function testAlias($expected, $actual): void
     {
         $this->assertSame($expected, (string) $actual);
