@@ -2,6 +2,7 @@
 
 namespace Jorbascrumps\QueueIt\Http\Middleware;
 
+use BadMethodCallException;
 use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
@@ -11,8 +12,26 @@ use QueueIT\KnownUserV3\SDK\ActionTypes;
 use QueueIT\KnownUserV3\SDK\KnownUser;
 use QueueIT\KnownUserV3\SDK\KnownUserException;
 use QueueIT\KnownUserV3\SDK\QueueEventConfig;
+use ReflectionClass;
 use Stringable;
 
+/**
+ * @method static self eventId(string $eventId)
+ * @method static self queueDomain(string $queueDomain)
+ * @method static self cookieDomain(string $cookieDomain)
+ * @method static self cookieValidityMinute(int $cookieValidityMinute)
+ * @method static self extendCookieValidity(bool $extendCookieValidity)
+ * @method static self culture(string $culture)
+ * @method static self layoutName(string $layoutName)
+ *
+ * @method self eventId(string $eventId)
+ * @method self queueDomain(string $queueDomain)
+ * @method self cookieDomain(string $cookieDomain)
+ * @method self cookieValidityMinute(int $cookieValidityMinute)
+ * @method self extendCookieValidity(bool $extendCookieValidity)
+ * @method self culture(string $culture)
+ * @method self layoutName(string $layoutName)
+ */
 class InlineQueue implements Stringable
 {
     public const ALIAS = 'queue-it.inline-queue';
@@ -119,53 +138,6 @@ class InlineQueue implements Stringable
         return $next($request);
     }
 
-    public static function eventId(string $eventId): self
-    {
-        return new self($eventId);
-    }
-
-    public function cookieDomain($cookieDomain): self
-    {
-        $this->cookieDomain = $cookieDomain;
-
-        return $this;
-    }
-
-    public function cookieValidityMinute($cookieValidityMinute): self
-    {
-        $this->cookieValidityMinute = $cookieValidityMinute;
-
-        return $this;
-    }
-
-    public function culture($culture): self
-    {
-        $this->culture = $culture;
-
-        return $this;
-    }
-
-    public function extendCookieValidity($extendCookieValidity): self
-    {
-        $this->extendCookieValidity = $extendCookieValidity;
-
-        return $this;
-    }
-
-    public function layoutName($layoutName): self
-    {
-        $this->layoutName = $layoutName;
-
-        return $this;
-    }
-
-    public function queueDomain($queueDomain): self
-    {
-        $this->queueDomain = $queueDomain;
-
-        return $this;
-    }
-
     private function getEventConfig(
         string $eventId = '',
         string $queueDomain = '',
@@ -212,5 +184,44 @@ class InlineQueue implements Stringable
             ->implode(',');
 
         return self::ALIAS . ':' . $params;
+    }
+
+    protected function setParameter(string $name, $value): self
+    {
+        $this->$name = $value;
+
+        return $this;
+    }
+
+    public static function __callStatic($name, $arguments)
+    {
+        if (self::isValidParameter($name)) {
+            return (new self)->setParameter($name, $arguments[0]);
+        }
+
+        throw new BadMethodCallException("Parameter $name does not exist.");
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (self::isValidParameter($name)) {
+            return $this->setParameter($name, $arguments[0]);
+        }
+
+        throw new BadMethodCallException("Parameter $name does not exist.");
+    }
+
+    private static function isValidParameter(string $name): bool
+    {
+        static $params = null;
+
+        if ($params === null) {
+            $reflectionClass = new ReflectionClass(self::class);
+            $reflectionConstructor = $reflectionClass->getConstructor();
+            $params = collect($reflectionConstructor->getParameters())
+                ->pluck('name');
+        }
+
+        return $params->contains($name);
     }
 }
