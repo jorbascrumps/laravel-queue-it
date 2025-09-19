@@ -40,37 +40,17 @@ class InlineQueue implements Stringable
 
     public const TOKEN_KEY = 'queueittoken';
 
-    protected ?string $eventId = null;
-
-    protected ?string $queueDomain = null;
-
-    protected ?string $cookieDomain = null;
-
-    protected int $cookieValidityMinute = 15;
-
-    protected bool $extendCookieValidity = true;
-
-    protected ?string $culture = null;
-
-    protected ?string $layoutName = null;
-
     public function __construct(
-        ?string $eventId = null,
-        ?string $queueDomain = null,
-        ?string $cookieDomain = null,
-        int     $cookieValidityMinute = 15,
-        bool    $extendCookieValidity = true,
-        ?string $culture = null,
-        ?string $layoutName = null
+        protected ?string $eventId = null,
+        protected ?string $queueDomain = null,
+        protected ?string $cookieDomain = null,
+        protected int $cookieValidityMinute = 15,
+        protected bool $extendCookieValidity = true,
+        protected ?string $culture = null,
+        protected ?string $layoutName = null,
     )
     {
-        $this->layoutName = $layoutName;
-        $this->culture = $culture;
-        $this->extendCookieValidity = $extendCookieValidity;
-        $this->cookieValidityMinute = $cookieValidityMinute;
-        $this->cookieDomain = $cookieDomain;
-        $this->queueDomain = $queueDomain;
-        $this->eventId = $eventId;
+        //
     }
 
     /**
