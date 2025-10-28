@@ -3,9 +3,8 @@
 namespace Jorbascrumps\QueueIt\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class FetchIntegrationConfig extends Command
 {
@@ -19,30 +18,31 @@ class FetchIntegrationConfig extends Command
      */
     protected $description = 'Fetch Queue-it integration configuration';
 
+    public const CONFIG_ENDPOINT = 'https://%s.queue-it.net/status/integrationconfig/secure/%s';
+
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
         $config = config('queue-it');
-        $url = sprintf('https://%s.queue-it.net/status/integrationconfig/secure/%s', $config['customer_id'], $config['customer_id']);
+        $url = sprintf(self::CONFIG_ENDPOINT, $config['customer_id'], $config['customer_id']);
 
         try {
-            $response = Http::withHeaders([
-                'api-key' => $config['api_key'],
-            ])
+            Http::sink(storage_path($config['config_file']))
+                ->withHeaders([
+                    'api-key' => $config['api_key'],
+                ])
                 ->get($url)
                 ->throw();
-        } catch (RequestException $e) {
+        } catch (Throwable $e) {
             $this->error('Failed to fetch config: ' . $e->getMessage());
 
-            return Command::FAILURE;
+            return self::FAILURE;
         }
-
-        Storage::put($config['config_file'], $response->body());
 
         $this->info('Config fetched successfully');
 
-        return Command::SUCCESS;
+        return self::SUCCESS;
     }
 }
