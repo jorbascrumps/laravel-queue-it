@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "illuminate/support:${{ matrix.laravel }}" --no-update --no-progress
-          composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-security-blocking
 
       - name: Execute Unit Tests
         run: composer test
